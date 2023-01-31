@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,31 +7,64 @@ internal class Program
     static void Main(string[] args)
     {
         LeaderBoard leaderBoard = new LeaderBoard();
-        leaderBoard.ShowTop3();
+        leaderBoard.Choose();
     }
 }
 
 class LeaderBoard
 {
     private List<Player> _players = new List<Player>();
+    private int _topLadder = 3;
 
     public LeaderBoard()
     {
         CreatePlayers();
     }
 
-    public void ShowTop3()
+    public void Choose()
     {
-        var orderedPlayersByLvl = _players.OrderByDescending(player => player.Level).Take(3).ToList();
-        var orderedPlayersByStrength = _players.OrderByDescending(player => player.Strength).Take(3).ToList();
+        const string CommandShowTopLvl = "1";
+        const string CommandShowTopStrength = "2";
+        const string CommandExit = "3";
+        bool isExit = false;
 
-        Console.WriteLine("Top 3 players by lvl");
-        ShowPlayers(orderedPlayersByLvl);
-        Console.WriteLine("\nTop 3 players by Strength");
-        ShowPlayers(orderedPlayersByStrength);
+        while (isExit == false)
+        {
+            Console.WriteLine("Посмотреть таблицу лидеров по уровню - " + CommandShowTopLvl + ", по силе - " + CommandShowTopStrength + " выйти - " + CommandExit);
+            string userChoice = Console.ReadLine();
+
+            switch (userChoice)
+            {
+                case CommandShowTopLvl:
+                    ShowTopLvl();
+                    break;
+                case CommandShowTopStrength:
+                    ShowTopStrength();
+                    break;
+                case CommandExit:
+                    isExit = true;
+                    break;
+            }
+        }
     }
 
-    private void ShowPlayers(List<Player> players)
+    private void ShowTopLvl()
+    {
+        var orderedPlayersByLvl = _players.OrderByDescending(player => player.Level).Take(_topLadder).ToList();
+
+        Console.WriteLine("Top " + _topLadder + " players by lvl");
+        Show(orderedPlayersByLvl);
+    }
+
+    private void ShowTopStrength()
+    {
+        var orderedPlayersByStrength = _players.OrderByDescending(player => player.Strength).Take(_topLadder).ToList();
+
+        Console.WriteLine("\nTop " + _topLadder + " players by Strength");
+        Show(orderedPlayersByStrength);
+    }
+
+    private void Show(List<Player> players)
     {
         int numberPlayer = 1;
 
